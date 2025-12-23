@@ -78,7 +78,10 @@ app.post('/api/create-payment', (req, res) => {
         }
 
         const timeStamp = Math.round(new Date().getTime() / 1000);
-        const orderNo = sessionId || `ORD${timeStamp}`; // Use SessionID as OrderNo if provided
+        // NewebPay requires MerchantOrderNo to be max 30 characters
+        // Truncate sessionId or use timestamp-based ID
+        const rawOrderNo = sessionId || `ORD${timeStamp}`;
+        const orderNo = rawOrderNo.replace(/-/g, '').substring(0, 30); // Remove dashes and limit to 30 chars
 
         const tradeData = {
             MerchantID: CONFIG.MerchantID,
