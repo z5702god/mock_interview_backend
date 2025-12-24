@@ -118,6 +118,29 @@ app.post('/api/create-payment', (req, res) => {
     }
 });
 
+/**
+ * API: Payment Return Handler
+ * POST /api/payment-return
+ * This endpoint receives POST from NewebPay after payment completion
+ * and redirects user to the frontend interview.html page
+ */
+app.post('/api/payment-return', (req, res) => {
+    console.log('=== Payment Return Received ===');
+    console.log('Body:', req.body);
+
+    // NewebPay sends TradeInfo in the POST body
+    // We don't need to process it here - just redirect to frontend
+    // The frontend will handle showing results based on localStorage session
+
+    const frontendUrl = process.env.FRONTEND_URL || 'https://mock-interview-tw.netlify.app';
+    const redirectUrl = `${frontendUrl}/interview.html?payment=success`;
+
+    console.log('Redirecting to:', redirectUrl);
+
+    // Use 303 See Other for POST-to-GET redirect
+    res.redirect(303, redirectUrl);
+});
+
 // Health Check
 app.get('/', (req, res) => {
     res.send('Payment Server is running');
